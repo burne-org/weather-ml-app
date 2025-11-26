@@ -21,10 +21,15 @@ class TestUnit(unittest.TestCase):
 			'clouds': '9'
 		}
 		response = self.client.post('/', data=form_data)
+		# assertion - flask typically returns 400 Bad Request for missing/empty fields
+		self.assertEqual(response.status_code, 400, "Should return 400 bad request for missing a field")
+		
 
 	# Complete this function to test that the model can be loaded correctly
 	def test_model_can_be_loaded(self):
 		model = load_model()
+		# assertion - ensure model object is not None
+		self.assertIsNotNone(model, "Model failed to load")
 		
 
 	# Test model classification is within the 9 classes, each time for a different class with three different inputs
@@ -32,11 +37,13 @@ class TestUnit(unittest.TestCase):
 		test_input = np.array([269.686,1002,78,0,23,0,0,0,0]).reshape(1,-1)
 		class_result, _ = classify_weather(test_input) 
 		# Ensure that 'clear' class is returned
+		self.assertEqual(class_result, 'clear')
 		
 	def test_rainy_classification_output(self):
 		test_input = np.array([279.626,998,99,1,314,0.3,0,0,88]).reshape(1,-1)
 		class_result, _ = classify_weather(test_input) 
 		# Ensure that 'rainy' class is returned
+		self.assertEqual(class_result, 'rainy')
 		
 
 	def test_foggy_classification_output(self):
@@ -45,6 +52,8 @@ class TestUnit(unittest.TestCase):
 		class_result, _ = classify_weather(test_input) 
 
 		# Ensure that 'foggy' class is returned
+		self.assertEqual(class_result, 'foggy')
+
 		
 if __name__ == '__main__':
 	unittest.main()
