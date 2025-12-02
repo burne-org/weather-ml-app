@@ -19,13 +19,13 @@ jobs:
       with:
         python-version: '3.9'
 
-    # 3. Install Dependencies (Includes scikit-learn & pandas)
+    # 3. Install Dependencies (Includes scikit-learn & pandas from requirements.txt)
     - name: Install Dependencies
       run: |
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    # 4. Train Model (Generates weather_model.pkl for tests)
+    # 4. Train Model (Generates weather_model.pkl so unit tests don't fail)
     - name: Train Model
       run: python3 train_model.py
 
@@ -60,9 +60,12 @@ jobs:
         load: true
         tags: ${{ secrets.DOCKER_USER }}/weather-ml-app:v1
 
-    # 8. Build Test 
+    # 8. Build Test (Task 4.2 Spec Requirement)
     - name: Build Test (Run, Sleep, Curl)
       run: |
+        # CRITICAL FIX: Force remove any old container to prevent "Conflict" errors
+        docker rm -f build-test-container || true
+        
         # Run the container in detached mode
         docker run -d -p 5000:5000 --name build-test-container ${{ secrets.DOCKER_USER }}/weather-ml-app:v1
         
@@ -71,7 +74,7 @@ jobs:
         
         # Verify the app is running by curling localhost
         echo "Testing application URL..."
-        curl http://localhost:5000
+        curl -v http://localhost:5000
         
         # Cleanup: Stop and remove the container
         docker stop build-test-container
