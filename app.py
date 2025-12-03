@@ -5,7 +5,7 @@ import time
 
 app = Flask(__name__)
 #Changed rainy to rain
-weather_classes = ['clear', 'cloudy', 'drizzly', 'foggy', 'hazey', 'misty', 'rainy', 'smokey', 'thunderstorm']
+weather_classes = ['clear', 'cloudy', 'drizzly', 'foggy', 'hazey', 'misty', 'rain', 'smokey', 'thunderstorm']
 
 # FIX 1: Point to model in the root directory
 def load_model(model_path = 'weather_model.pkl'):
